@@ -1,13 +1,12 @@
-source("http://bioconductor.org/biocLite.R")
-
-biocLite("EBImage")
 library("EBImage")
 
-anImage <- readImage(file.choose())
-display(anImage)
+city_image = readImage("1.png")
 
+##To Choose your own Image uncomment this to select your own Image
+##city_image = readImage(file.choose())
+
+display(city_image)
 hist(anImage)
-city_image = readImage(file.choose())
 
 ImageofBuildingThreshol <- .6
 
