@@ -6,10 +6,11 @@ library(shinycssloaders)
 library(magrittr)
 
 # Define UI for data upload app ----
-ui <- bootstrapPage(
+ui <- fluidPage(
     # App title ----
     useShinyjs(),
     titlePanel(Sys.Date()),
+        uiOutput("website"),
     
     # Sidebar layout with input and output definitions ----
     sidebarLayout(
@@ -44,7 +45,7 @@ ui <- bootstrapPage(
                 width = "100%"
             ),
             tags$hr(),
-            span(uiOutput("option1"),style="color:red"),
+            span(uiOutput("option1"), style = "color:orange"),
             displayOutput("imgg", width = "100%", height = "500px") %>%
                 withSpinner()
             
@@ -57,27 +58,29 @@ ui <- bootstrapPage(
             # textOutput("buildings_count"),
             uiOutput("count_l"),
             tags$hr(),
-            span(uiOutput("processed"),style="color:red"),
+            span(uiOutput("processed"), style = "color:orange"),
             displayOutput("img_thres") %>%
-                withSpinner(color = "purple")
-            
+                withSpinner(color = "purple"),
         ),
         
         
     ),
-    tags$head(tags$style("#count_l{color: red;
-                                 font-size: 20px;
+    tags$head(
+        tags$style("#count_l{color: red;
+                                 font-size: 30px;
                                  font-style: italic;
-                                 }"
-    )
-    )
+                                 }")
+    ),
+    
 )
 
 # Define server logic to read selected file ----
 server <- function(input, output) {
-    # shinyjs::hideElement("calc")
-    # shinyjs::hideElement("ImageofBuildingThreshol")
-    #
+    
+    url <- a("MY BLOG", href="https://www.simonsayz.xyz/")
+    output$website <- renderUI({
+        tagList("Check Out", url)
+    })
     ## This code removes the loading icon when the app starts
     start_loads <- function() {
         req(input$file1)
@@ -92,15 +95,16 @@ server <- function(input, output) {
         })
         
     }
+    
+    
     output$imgg <- renderDisplay({
-        befr <- readImage('')
-        display(iii)
+        start_loads()
     })
     
     output$img_thres <- renderDisplay({
-        befr <- readImage('')
-        display(iii)
+        start_loads()
     })
+    output$about <- renderText("www.simonsayz.xyz")
     
     calc_buildings <- function() {
         req(input$file1)
