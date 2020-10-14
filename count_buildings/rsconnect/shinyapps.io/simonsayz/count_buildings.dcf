@@ -1,0 +1,13 @@
+name: count_buildings
+title: count_buildings
+username:
+account: simonsayz
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2990416
+bundleId: 3728705
+url: https://simonsayz.shinyapps.io/count_buildings/
+when: 1602486965.26684
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: www/after.PNG|www/before.PNG

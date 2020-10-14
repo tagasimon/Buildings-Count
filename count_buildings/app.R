@@ -1,14 +1,21 @@
-library(shiny)
 library("EBImage")
+library(shiny)
 library(glue)
 library(shinyjs)
 library(shinycssloaders)
 library(magrittr)
+library(shinydisconnect)
+options(shiny.maxRequestSize = 1 * 1024^2)
+
+pdf(NULL)
+
 
 # Define UI for data upload app ----
 ui <- fluidPage(
     # App title ----
     useShinyjs(),
+    disconnectMessage2(),
+    # actionButton("disconnect", "Disconnect the app"),
     titlePanel(Sys.Date()),
         uiOutput("website"),
     
@@ -19,10 +26,10 @@ ui <- fluidPage(
             # Input: Select a file ----
             fileInput(
                 "file1",
-                "Step 1: Upload Google Map Screen Shot",
+                "Upload SateLite View Shot < 1Mb",
                 multiple = FALSE,
                 accept = c(".PNG", ".png", ".JPG", ".JPEG", "jpg", ".jpeg"),
-                placeholder = "Google Maps Screen Shot",
+                placeholder = "Max File Size of 1 Mb",
                 buttonLabel = "Browse..."
             ),
             
@@ -53,7 +60,7 @@ ui <- fluidPage(
         
         # Main panel for displaying outputs ----
         mainPanel(
-            titlePanel("Buildings in the Area from Google Maps Screen Shot"),
+            titlePanel("Upload a Google Maps SateLite View Shot &  Calculate"),
             tags$hr(),
             # textOutput("buildings_count"),
             uiOutput("count_l"),
@@ -75,7 +82,7 @@ ui <- fluidPage(
 )
 
 # Define server logic to read selected file ----
-server <- function(input, output) {
+server <- function(input, output, session) {
     
     url <- a("MY BLOG", href="https://www.simonsayz.xyz/")
     output$website <- renderUI({
@@ -88,7 +95,7 @@ server <- function(input, output) {
             shinyjs::showElement("calc")
             shinyjs::showElement("ImageofBuildingThreshol")
             city_image = readImage(input$file1$datapath)
-            display(city_image)
+            display(city_image, method = 'browser')
         },
         error = function(e) {
             stop(safeError(e))
@@ -116,13 +123,13 @@ server <- function(input, output) {
             building_count <- bwlabel(city_image_threshold)
             b_count_max <- max(building_count)
             output$img_thres <- renderDisplay({
-                display(city_image_threshold)
+                display(city_image_threshold, method = 'browser')
             })
             output$count_l <- renderText({
                 # shinyjs::disable("calc")
                 glue::glue("Approximatly ~", {
                     b_count_max
-                })
+                }, " Buildings")
                 # max(b_count_min)
                 
             })
@@ -146,6 +153,10 @@ server <- function(input, output) {
     observeEvent(input$ImageofBuildingThreshol, {
         calc_buildings()
     })
+    
+    # observeEvent(input$disconnect, {
+    #     session$close()
+    # })
     
     
 }
